@@ -42,7 +42,7 @@ jobs:
     # 5. Запуск Postman тестів через Newman
     - name: Run Postman tests
       run: |
-        newman run postman/postman_collection.json \
+        newman run postman/IDZ.postman_collection.json \
           --reporters cli,json \
           --reporter-json-export postman-results.json
 
