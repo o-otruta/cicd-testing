@@ -33,12 +33,13 @@ jobs:
     - name: Install Newman
       run: npm install -g newman
       
-    # 4. Встановлення Chrome та ChromeDriver
-    - name: Set up Chrome
-      uses: browser-actions/setup-chrome@v1
-    - name: Set up ChromeDriver
-      uses: nanasess/setup-chromedriver@v1
-      
+    # 4. Встановлення Chrome та ChromeDriver вручну
+    - name: Install Chrome and ChromeDriver
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+        sudo apt-get install -y chromedriver
+
     # 5. Запуск Flask-сервера у фоновому режимі
     - name: Start Flask server
       run: |
