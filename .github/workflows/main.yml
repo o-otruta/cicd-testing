@@ -39,10 +39,17 @@ jobs:
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt install ./google-chrome-stable_current_amd64.deb
 
-    # 5. Встановлення ChromeDriver
     - name: Install ChromeDriver
       run: |
-        wget -q "https://chromedriver.storage.googleapis.com/120.0.6099.71/chromedriver_linux64.zip"
+        # Визначення версії Google Chrome
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+        echo "Detected Chrome version: $CHROME_VERSION"
+        
+        # Завантаження відповідної версії ChromeDriver
+        CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+        echo "Downloading ChromeDriver version: $CHROMEDRIVER_VERSION"
+    
+        wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
         unzip chromedriver_linux64.zip
         sudo mv chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
