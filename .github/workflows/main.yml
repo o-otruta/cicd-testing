@@ -33,32 +33,42 @@ jobs:
     - name: Install Newman
       run: npm install -g newman
       
-    # 4. Встановлення Chrome та ChromeDriver вручну
-    - name: Install Chrome and ChromeDriver
+    # 4. Встановлення Google Chrome
+    - name: Install Google Chrome
       run: |
-        sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
-        sudo apt-get install -y chromedriver
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt install ./google-chrome-stable_current_amd64.deb
 
-    # 5. Запуск Flask-сервера у фоновому режимі
+    # 5. Встановлення ChromeDriver
+    - name: Install ChromeDriver
+      run: |
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+        CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}")
+        wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
+        chromedriver --version
+
+    # 6. Запуск Flask-сервера у фоновому режимі
     - name: Start Flask server
       run: |
         python app.py &
         sleep 5
 
-    # 6. Запуск Postman тестів через Newman
+    # 7. Запуск Postman тестів через Newman
     - name: Run Postman tests
       run: |
         newman run postman/IDZ.postman_collection.json \
           --reporters cli,json \
           --reporter-json-export postman-results.json
 
-    # 7. Запуск Selenium тестів
+    # 8. Запуск Selenium тестів
     - name: Run Selenium tests
       run: |
         python tests/selenium_test.py
 
-    # 8. Завантаження результатів тестування
+    # 9. Завантаження результатів тестування
     - name: Upload Test Results
       uses: actions/upload-artifact@v3
       with:
