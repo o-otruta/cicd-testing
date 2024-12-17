@@ -34,18 +34,20 @@ jobs:
       run: npm install -g newman
       
     # 4. Встановлення Google Chrome
-    - name: Install Stable Google Chrome
+    - name: Install Google Chrome
       run: |
-        wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_120.0.6099.199-1_amd64.deb
-        sudo apt install --allow-downgrades -y ./google-chrome-stable_120.0.6099.199-1_amd64.deb
-    
-    - name: Install Compatible ChromeDriver
-      run: |
-        wget -q "https://chromedriver.storage.googleapis.com/120.0.6099.199/chromedriver_linux64.zip"
-        unzip chromedriver_linux64.zip
-        sudo mv chromedriver /usr/local/bin/
-        sudo chmod +x /usr/local/bin/chromedriver
+        wget -q "https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.108/linux64/chrome-linux64.zip"
+        unzip chrome-linux64.zip
+        sudo mv chrome-linux64 /usr/local/share/google-chrome
+        sudo ln -s /usr/local/share/google-chrome/chrome /usr/local/bin/google-chrome
         google-chrome --version
+    
+    - name: Install ChromeDriver
+      run: |
+        wget -q "https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.108/linux64/chromedriver-linux64.zip"
+        unzip chromedriver-linux64.zip
+        sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
         chromedriver --version
 
     # 6. Запуск Flask-сервера у фоновому режимі
