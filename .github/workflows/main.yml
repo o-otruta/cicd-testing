@@ -1,0 +1,60 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout репозиторію
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2. Встановлення Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flask selenium
+
+    # 3. Встановлення Node.js та Newman для Postman
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install Newman
+      run: npm install -g newman
+
+    # 4. Запуск Flask-сервера у фоновому режимі
+    - name: Start Flask server
+      run: |
+        python app.py &
+        sleep 5
+
+    # 5. Запуск Postman тестів через Newman
+    - name: Run Postman tests
+      run: |
+        newman run postman/postman_collection.json \
+          --reporters cli,json \
+          --reporter-json-export postman-results.json
+
+    # 6. Запуск Selenium тестів
+    - name: Run Selenium tests
+      run: |
+        python tests/selenium_test.py
+
+    # 7. Завантаження результатів тестування
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: Test Results
+        path: |
+          postman-results.json
