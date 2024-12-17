@@ -34,25 +34,19 @@ jobs:
       run: npm install -g newman
       
     # 4. Встановлення Google Chrome
-    - name: Install Google Chrome
+    - name: Install Stable Google Chrome
       run: |
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo apt install ./google-chrome-stable_current_amd64.deb
-
-    - name: Install ChromeDriver
-      run: |
-        # Визначення версії Google Chrome
-        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-        echo "Detected Chrome version: $CHROME_VERSION"
-        
-        # Завантаження відповідної версії ChromeDriver
-        CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-        echo "Downloading ChromeDriver version: $CHROMEDRIVER_VERSION"
+        wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_120.0.6099.199-1_amd64.deb
+        sudo apt install ./google-chrome-stable_120.0.6099.199-1_amd64.deb
     
-        wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+    - name: Install Compatible ChromeDriver
+      run: |
+        wget -q "https://chromedriver.storage.googleapis.com/120.0.6099.199/chromedriver_linux64.zip"
         unzip chromedriver_linux64.zip
         sudo mv chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
+        google-chrome --version
+        chromedriver --version
 
     # 6. Запуск Flask-сервера у фоновому режимі
     - name: Start Flask server
