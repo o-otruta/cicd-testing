@@ -32,26 +32,32 @@ jobs:
 
     - name: Install Newman
       run: npm install -g newman
-
-    # 4. Запуск Flask-сервера у фоновому режимі
+      
+    # 4. Встановлення Chrome та ChromeDriver
+    - name: Set up Chrome
+      uses: browser-actions/setup-chrome@v1
+    - name: Set up ChromeDriver
+      uses: nanasess/setup-chromedriver@v1
+      
+    # 5. Запуск Flask-сервера у фоновому режимі
     - name: Start Flask server
       run: |
         python app.py &
         sleep 5
 
-    # 5. Запуск Postman тестів через Newman
+    # 6. Запуск Postman тестів через Newman
     - name: Run Postman tests
       run: |
         newman run postman/IDZ.postman_collection.json \
           --reporters cli,json \
           --reporter-json-export postman-results.json
 
-    # 6. Запуск Selenium тестів
+    # 7. Запуск Selenium тестів
     - name: Run Selenium tests
       run: |
         python tests/selenium_test.py
 
-    # 7. Завантаження результатів тестування
+    # 8. Завантаження результатів тестування
     - name: Upload Test Results
       uses: actions/upload-artifact@v3
       with:
