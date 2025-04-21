@@ -36,7 +36,7 @@ jobs:
     # 4. Встановлення Google Chrome
     - name: Install Google Chrome
       run: |
-        wget -q "https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.108/linux64/chrome-linux64.zip"
+        wget -q "https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.95/linux64/chrome-linux64.zip"
         unzip chrome-linux64.zip
         sudo mv chrome-linux64 /usr/local/share/google-chrome
         sudo ln -s /usr/local/share/google-chrome/chrome /usr/local/bin/google-chrome
@@ -44,7 +44,7 @@ jobs:
     
     - name: Install ChromeDriver
       run: |
-        wget -q "https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.108/linux64/chromedriver-linux64.zip"
+        wget -q "https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.95/linux64/chromedriver-linux64.zip"
         unzip chromedriver-linux64.zip
         sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
